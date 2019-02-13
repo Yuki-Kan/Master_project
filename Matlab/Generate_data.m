@@ -1,6 +1,6 @@
-function [ rand_data, rand_lbl ] = Generate_data(cls_ctrs, p1, prots)
+function [ rand_data, rand_lbl ] = Generate_data(cls_ctrs, p1, prots, if_plot)
 %ARTI_DATA Summary of this function goes here
-%   Detailed explanation goes hereN
+%   Detailed explanation goes here
 N = 2; % number of classes
 Num_all = 500; % number of all the points
 
@@ -29,29 +29,30 @@ for i = 1:N
     lbl(rows) = i;
 end
 
-figure;
-hold on;
-sz = 20;
+% decide if plot figures or not
+if if_plot == 1
+   figure;
+   hold on;
+   sz = 20;
+   
+   for i = 1:N
+       S = clt(i); % number of points each class
+       if i == 1
+           rows = 1:S;
+       else
+           rows = clt(i-1)+1:clt(i-1)+S;
+       end
+       scatter(fvec(rows,1), fvec(rows,2),sz, 'filled');
+   end
 
-for i = 1:N
-    S = clt(i); % number of points each class
-    if i == 1
-        rows = 1:S;
-    else
-        rows = clt(i-1)+1:clt(i-1)+S;
-    end
-    scatter(fvec(rows,1), fvec(rows,2),sz, 'filled');
+   % plot prototypes
+   gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,3); prots(2,3)], 'mg', '..',25);
+   xlim([-3 5])
+   ylim([-3 5])
+   hold off;
+   legend(['p1=' num2str(p1)],['p2=' num2str(p2)])
+
 end
-
-
-% plot prototypes
-gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,3); prots(2,3)], 'mg', '..',25);
-
-xlim([-5 3])
-ylim([-3 5])
-hold off;
-legend(['p1=' num2str(p1)],['p2=' num2str(p2)])
-
 
 %randomly select one datapoint at timestep t
 rand_ind = randi(Num_all);
