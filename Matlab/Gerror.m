@@ -30,7 +30,7 @@ z2 = num2/den2;
 
 % perform integral
 syms x
-f = exp(-x^2/2)/sqrt(2*pi);
+f = exp(-(x^2)/2)/sqrt(2*pi);
 err1 = int(f, -inf, z1);
 err2 = int(f, -inf, z2);
 

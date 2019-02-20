@@ -1,7 +1,7 @@
-function [fvec, lbl] = Generate_data(cls_ctrs, prots)
+function [fvec, lbl] = Generate_data(cls_ctrs, prots, N)
 %ARTI_DATA Summary of this function goes here
 %   Detailed explanation goes here
-N = 2; % number of classes
+C = 2; % number of classes
 Num_all = 400; % number of all the points
 
 % p2 = 1 - p1;
@@ -12,42 +12,34 @@ clt = [Num1 Num2]; % store the number of points each cluster
 
 var = 0.4; % sigma for the normrnd spread
 sigma = sqrt(var);
-D = 0;
 
 % feature vectors for the data and vector for the label
-fvec = zeros(Num_all, D+2);
+fvec = zeros(Num_all, N);
 lbl = zeros(Num_all,1);
 
-for i = 1:N
+for i = 1:C
     S = clt(i); % number of points each class
-    if i == 1
-        rows = 1:S;
-    else
-        rows = clt(i-1)+1:clt(i-1)+S;
+    rows = (i-1)*S+1:i*S;
+    for j = 1:N
+        fvec(rows,j) = normrnd(cls_ctrs(i, j), sigma, [S,1]); % first dim
     end
-    fvec(rows,1) = normrnd(cls_ctrs(i, 1), sigma, [S,1]); % first dim
-    fvec(rows,2) = normrnd(cls_ctrs(i, 2), sigma, [S,1]); % second dim
     lbl(rows) = i;
 end
 
-% decide if plot figures or not
+% PROJECTION
 
 figure;
 hold on;
 sz = 20;
 
-for i = 1:N
+for i = 1:C
    S = clt(i); % number of points each class
-   if i == 1
-       rows = 1:S;
-   else
-       rows = clt(i-1)+1:clt(i-1)+S;
-   end
+   rows = (i-1)*S+1:i*S;
    scatter(fvec(rows,1), fvec(rows,2),sz, 'filled');
 end
 
 % plot prototypes
-gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,3); prots(2,3)], 'mg', '..',25);
+gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,N+1); prots(2,N+1)], 'mg', '..',25);
 xlim([-3 5])
 ylim([-3 5])
 hold off;

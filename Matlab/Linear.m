@@ -1,21 +1,27 @@
-function [cls_w1, cls_w2] = Linear( a0, a_end, p_init, p_max)
+function [cls_w1, cls_w2] = Linear( a0, a_end, p_init, p_max, ls)
 %CLASS_WEIGHTS Summary of this function goes here
 %   Detailed explanation goes here
 
-alpha = 0:a_end-1;
-p1 = zeros(1,a_end);
-p2 = zeros(1,a_end);
+alpha = 1:ls:a_end;
+len = length(alpha);
+p1 = zeros(1,len);
+p2 = zeros(1,len);
+i = 1;
+
 
 % for t <= t0
-for t = 1:a0
-    p1(t) = p_init;
-    p2(t) = 1 - p1(t);
+for t = 1:ls:a0
+    p1(i) = p_init;
+    p2(i) = 1 - p1(i);
+    i = i +1;
 end
 
+i = i -1 ;
 % for t0 <= t_end
-for t = a0:a_end
-    p1(t) = p_init + (p_max - p_init)* (t-a0) /(a_end - a0);
-    p2(t) = 1 - p1(t);
+for t = a0:ls:a_end
+    p1(i) = p_init + (p_max - p_init)* (t-a0) /(a_end - a0);
+    p2(i) = 1 - p1(i);
+    i = i+1;
 end
 
 cls_w1 = p1;
