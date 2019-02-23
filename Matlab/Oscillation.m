@@ -1,8 +1,8 @@
-function [cls_w1, cls_w2] = Oscillation(p_max, T, StopTime)
+function [cls_w1, cls_w2] = Oscillation(p_max, T, StopTime,ls)
 %%Time specifications:
-Fs = 1;                 % samples per second
-dt = 1/Fs;                % seconds per samples
-t = 0:dt:StopTime;     % seconds
+% Fs = 1;                 % samples per second
+% dt = 1/Fs;                % seconds per samples
+t = 1:ls:StopTime;     % seconds
 
 fc = 1/T;
 p1 = 0.5+(p_max-0.5)*cos(2*pi*fc*t);

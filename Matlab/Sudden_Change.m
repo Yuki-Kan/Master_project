@@ -1,20 +1,25 @@
-function [ cls_w1, cls_w2 ] = Sudden_Change(a0, a_end, p_max_sudden)
+function [ cls_w1, cls_w2 ] = Sudden_Change(a0, a_end, p_max_sudden, ls)
 %SUDDEN_CHANGE Summary of this function goes here
 %   Detailed explanation goes here
-alpha = 0:a_end-1;
-p1_sudden = zeros(1,a_end);
-p2_sudden = zeros(1,a_end);
+alpha = 0:ls:a_end-1;
+len = length(alpha);
+p1_sudden = zeros(1,len);
+p2_sudden = zeros(1,len);
+i = 1;
 
 % for t <= t0
-for t = 1:a0
-    p1_sudden(t) = p_max_sudden;
-    p2_sudden(t) = 1 - p1_sudden(t);
+for t = 1:ls:a0
+    p1_sudden(i) = p_max_sudden;
+    p2_sudden(i) = 1 - p1_sudden(i);
+    i = i+1;
 end
 
+i = i -1 ;
 % for t0 <= t_end
-for t = a0:a_end
-    p1_sudden(t) = 1- p_max_sudden;
-    p2_sudden(t) = 1 - p1_sudden(t);
+for t = a0:ls:a_end
+    p1_sudden(i) = 1- p_max_sudden;
+    p2_sudden(i) = 1 - p1_sudden(i);
+    i = i+1;
 end
 
 cls_w1 = p1_sudden;

@@ -1,10 +1,10 @@
 % general parameters
-a0 = 25;
-a_end = 50;
+a0 = 50;
+a_end = 200;
 p_max = 0.8;
 L = 1;              % cluster drift distance
-eta = 0.05;         % learning rate
-N = 5;              % data dimention 
+eta = 0.01;         % learning rate
+N = 200;              % data dimention 
 ls = 1/N;     % continue learning step
 tic;
 
@@ -25,18 +25,18 @@ prots = [prots_feature prots_lbl];
 lbl1_idx = find(lbl==1);
 lbl2_idx = find(lbl==2);
 
-% Linear
-p_init = 0.5;
-[cls_p1, cls_p2] = Linear(a0, a_end, p_init, p_max, ls);
+% % Linear
+% p_init = 0.5;
+% [cls_p1, cls_p2] = Linear(a0, a_end, p_init, p_max, ls);
 
 % % Sudden change
 % p_max_sudden = 0.75;
-% [cls_w1, cls_w2] = Sudden_Change(a0, a_end, p_max_sudden);
+% [cls_w1, cls_w2] = Sudden_Change(a0, a_end, p_max_sudden, ls);
 
-% % Oscillating
-% p_max_osc = 0.8;
-% T = 50;
-% [cls_w1, cls_w2] = Oscillation(p_max_osc, T, a_end);
+% Oscillating
+p_max_osc = 0.8;
+T = 50;
+[cls_w1, cls_w2] = Oscillation(p_max_osc, T, a_end, ls);
 
 % Parameters for Generation error
 lambda = 1; 
@@ -71,30 +71,36 @@ for t = 1:ls:a_end
 
     % get generalization error
     [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, current_p1);
-    err1_array = [err1_array; err1];
-    err2_array = [err2_array; err2];
-    ref_error_array = [ref_error_array; ref_err];
-    tra_error_array = [tra_error_array; tra_err];
+    
+    if rem(i,N)==0
+        err1_array = [err1_array; err1];
+        err2_array = [err2_array; err2];
+        ref_error_array = [ref_error_array; ref_err];
+        tra_error_array = [tra_error_array; tra_err];
+    end
     
     i = i+1;
 end
 
-
-tra_err_array = double(tra_error_array);
-ref_err_array = double(ref_error_array);
-gerr1_array = double(err1_array);
-gerr2_array = double(err2_array);
+% 
+% tra_err_array = double(tra_error_array);
+% ref_err_array = double(ref_error_array);
+% gerr1_array = double(err1_array);
+% gerr2_array = double(err2_array);
 
 % plot tracking error and reference error
 figure;
 hold on
-plot(1:a_end, tra_err_array,'-*','MarkerSize',4);
-plot(1:a_end, ref_err_array,'-x','MarkerSize',4);
-plot(1:a_end, gerr1_array)
-plot(1:a_end, gerr2_array)
+plot(1:a_end-1, tra_error_array);
+plot(1:a_end-1, ref_error_array);
+plot(1:a_end-1, err1_array)
+plot(1:a_end-1, err2_array)
 hold off
-ylim([0 0.3])
-legend({'tracking error','ref error','error1','er ror2'})
+ylim([0 0.4])
+legend({'tracking error','ref error','error1','error2'}, 'location', 'northwest')
+xlabel('\alpha')
+ylabel('\epsilon')
+
 
 time_total = toc;
 
