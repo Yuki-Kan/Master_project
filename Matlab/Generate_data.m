@@ -21,7 +21,7 @@ for i = 1:C
     S = clt(i); % number of points each class
     rows = (i-1)*S+1:i*S;
     for j = 1:N
-        fvec(rows,j) = normrnd(cls_ctrs(i, j), sigma, [S,1]); % first dim
+        fvec(rows,j) = normrnd(cls_ctrs(i, j), sigma, [S,1]); 
     end
     lbl(rows) = i;
 end

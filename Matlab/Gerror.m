@@ -29,8 +29,7 @@ den2 = 2 * sqrt(var2) * sqrt(Q11 - 2*Q12 + Q22);
 z2 = num2/den2;
 
 % perform integral
-% syms x
-f = @(x) exp(-(x.^2)/2)./sqrt(2.*pi);
+f = @(x) exp(-(x.^2)./2)./sqrt(2.*pi);
 err1 = integral (f, -inf, z1);
 err2 = integral (f, -inf, z2);
 
