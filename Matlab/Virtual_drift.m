@@ -1,10 +1,13 @@
+function [ output_args ] = Virtual_Drift( scenario_idx )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
 % general parameters
 a0 = 50;
 a_end = 200;
-p_max = 0.8;
 eta = 0.5;         % learning rate
-N = 200;              % data dimention 
-ls = 1/N;     % continue learning step
+N = 200;           % data dimention 
+ls = 1/N;          % continue learning step
 tic;
 
 % initialize cluster centres
@@ -14,7 +17,6 @@ c1 = c1/norm(c1);
 c2 = zeros(1, N);
 c2(1) = 1;
 cls_ctrs = [c1; c2];
-
 
 % Initial prototypes
 prots_feature = [c1; c2];
@@ -26,20 +28,23 @@ prots = [prots_feature prots_lbl];
 lbl1_idx = find(lbl==1);
 lbl2_idx = find(lbl==2);
 
-% % Linear
-% p_init = 0.5;
-% [cls_p1, cls_p2] = Linear(a0, a_end, p_init, p_max, ls);
+% initial parameters of three scenarios
+p_init_linear = 0.5;  % Linear
+p_max_linear = 0.8;
+p_max_sudden = 0.75;  % Sudden change
+p_max_osc = 0.8;      % Oscillating
+T = 50;
 
-% Sudden change
-p_max_sudden = 0.75;
-[cls_p1, cls_p2] = Sudden_Change(a0, a_end, p_max_sudden, ls);
+switch scenario_idx
+    case 1
+        [cls_p1, cls_p2] = Linear(a0, a_end, p_init_linear, p_max_linear, ls);
+    case 2
+        [cls_p1, cls_p2] = Sudden_Change(a0, a_end, p_max_sudden, ls);
+    case 3
+        [cls_p1, cls_p2] = Oscillation(p_max_osc, T, a_end, ls);
+end
 
-% % Oscillating
-% p_max_osc = 0.8;
-% T = 50;
-% [cls_p1, cls_p2] = Oscillation(p_max_osc, T, a_end, ls);
-
-% Parameters for Generation error
+% initial parameters of Generation error
 lambda = 1; 
 var1 = 0.4;
 var2 = 0.4;
@@ -94,6 +99,7 @@ hold on
 % plot(1:ls:a_end, ref_error_array);
 % plot(1:ls:a_end, err1_array)
 % plot(1:ls:a_end, err2_array)
+
 plot(1:a_end-1, tra_error_array);
 plot(1:a_end-1, ref_error_array);
 plot(1:a_end-1, err1_array)
@@ -108,6 +114,5 @@ ylabel('\epsilon')
 time_total = toc;
 
 
-
-
+end
 
