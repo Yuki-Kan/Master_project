@@ -1,14 +1,8 @@
-function [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, p1 )
+function [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, p1, Q11, Q12, Q22 )
 %Gerror Summary of this function goes here
 %   Detailed explanation goes here
 
 p2 = 1 - p1;
-
-% order parameters
-Q11 = proto1 * proto1';
-Q22 = proto2 * proto2';
-Q12 = proto1 * proto2';
-Q21 = proto2 * proto1';
 
 cent1 = c1/norm(c1);
 cent2 = c2/norm(c2);

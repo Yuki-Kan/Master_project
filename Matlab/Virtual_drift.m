@@ -72,10 +72,15 @@ for t = 1:ls:a_end
     prots = LVQ1_algorithm(selected_data, data_label, prots, eta, N);
     proto1 = prots(1, 1:N);
     proto2 = prots(2, 1:N);
-%     protos_array = [protos_array; prots];
+    
+    % order parameters
+    Q11 = proto1 * proto1';
+    Q22 = proto2 * proto2';
+    Q12 = proto1 * proto2';
+    Q21 = proto2 * proto1';
 
     % get generalization error
-    [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, current_p1);
+    [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, current_p1, Q11, Q12, Q22);
     
     if rem(i,N)==0
         err1_array = [err1_array; err1];
@@ -88,6 +93,10 @@ for t = 1:ls:a_end
 %     err2_array = [err2_array; err2];
 %     ref_error_array = [ref_error_array; ref_err];
 %     tra_error_array = [tra_error_array; tra_err];
+
+    % add noise
+    [proto1_new, proto2_new] = AccuNoise(Q11, Q12, Q22, eta, N, proto1, proto2);
+    prots = [[proto1_new ; proto2_new] prots_lbl];
     
     i = i+1;
 end
