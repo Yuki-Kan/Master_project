@@ -1,4 +1,4 @@
-function [ output_args ] = Virtual_Drift( scenario_idx )
+function [ time_total ] = Virtual_Drift( scenario_idx )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,7 +6,7 @@ function [ output_args ] = Virtual_Drift( scenario_idx )
 a0 = 50;
 a_end = 200;
 eta = 0.5;         % learning rate
-N = 200;           % data dimention 
+N = 100;           % data dimention 
 ls = 1/N;          % continue learning step
 tic;
 
@@ -25,12 +25,13 @@ cls_ctrs = [c1; c2];
 % Initial prototypes
 prots_feature = [c1; c2];
 prots_lbl = [1;2];
+[num_proto, d] = size(prots_lbl);
 prots = [prots_feature prots_lbl];
 
-% generate artificial dataset
-[fvec, lbl] = Generate_data(cls_ctrs, prots, N);
-lbl1_idx = find(lbl==1);
-lbl2_idx = find(lbl==2);
+% % generate artificial dataset
+% [fvec, lbl] = Generate_data(cls_ctrs, prots, N);
+% lbl1_idx = find(lbl==1);
+% lbl2_idx = find(lbl==2);
 
 % initial parameters of three scenarios
 p_init_linear = 0.5;  % Linear
@@ -80,18 +81,14 @@ for t = 1:ls:a_end
 %     end
 
     % use the randomly selected datapoint to update prots
-    prots = LVQ1_algorithm(new_data, data_label, prots, eta, N);
-    proto1 = prots(1, 1:N);
-    proto2 = prots(2, 1:N);
+    prots = LVQ1_algorithm(new_data, data_label, prots, eta, N); % last feature gives label
+    all_protos = prots(:, 1:N);
     
     % order parameters
-    Q11 = proto1 * proto1';
-    Q22 = proto2 * proto2';
-    Q12 = proto1 * proto2';
-    Q21 = proto2 * proto1';
+    Q = all_protos * all_protos';
 
     % get generalization error
-    [err1, err2, ref_err, tra_err] = Gerror(proto1, proto2, c1, c2, lambda, var1, var2, current_p1, Q11, Q12, Q22);
+    [err1, err2, ref_err, tra_err] = Gerror(all_protos, cls_ctrs, lambda, var1, var2, current_p1, Q);
     
     if rem(i,N)==0
         err1_array = [err1_array; err1];
@@ -105,9 +102,9 @@ for t = 1:ls:a_end
 %     ref_error_array = [ref_error_array; ref_err];
 %     tra_error_array = [tra_error_array; tra_err];
 
-%     % add noise
-%     [proto1_new, proto2_new] = AccuNoise(Q11, Q12, Q22, eta, N, proto1, proto2);
-%     prots = [[proto1_new ; proto2_new] prots_lbl];
+    % add noise
+    proto_new = AccuNoise(Q, eta, N, all_protos);
+    prots = [proto_new prots_lbl];
     
     i = i+1;
 end
@@ -127,7 +124,7 @@ plot(1:a_end-1, err2_array)
 hold off
 ylim([0 0.4])
 legend({'tracking error','ref error','error1','error2'}, 'location', 'northwest')
-xlabel('\alpha')
+xlabel('\alpha') 
 ylabel('\epsilon')
 
 

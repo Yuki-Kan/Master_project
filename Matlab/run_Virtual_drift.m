@@ -1,6 +1,6 @@
 % run virtual drift under three scenarios respectively
 % linear
-Virtual_Drift(1)
+time_total = Virtual_Drift(1);
 
 % sudden change
 Virtual_Drift(2)

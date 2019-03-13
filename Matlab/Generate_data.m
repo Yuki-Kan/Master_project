@@ -2,7 +2,7 @@ function [fvec, lbl] = Generate_data(cls_ctrs, prots, N)
 %ARTI_DATA Summary of this function goes here
 %   Detailed explanation goes here
 C = 2; % number of classes
-Num_all = 400; % number of all the points
+Num_all = 200; % number of all the points
 
 % p2 = 1 - p1;
 p = 0.5; 
