@@ -1,4 +1,4 @@
-function [ cls_w1, cls_w2 ] = Sudden_Change(a0, a_end, p_max_sudden, ls)
+function [ cls_w1 ] = Sudden_Change(a0, a_end, p_max_sudden, ls)
 %SUDDEN_CHANGE Summary of this function goes here
 %   Detailed explanation goes here
 alpha = 0:ls:a_end-1;
@@ -23,7 +23,6 @@ for t = a0:ls:a_end
 end
 
 cls_w1 = p1_sudden;
-cls_w2 = p2_sudden;
 
 figure;
 plot(alpha, p1_sudden);

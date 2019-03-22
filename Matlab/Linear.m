@@ -1,4 +1,4 @@
-function [cls_w1, cls_w2] = Linear( a0, a_end, p_init, p_max, ls)
+function [cls_w1] = Linear( a0, a_end, p_init, p_max, ls)
 %CLASS_WEIGHTS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -25,7 +25,6 @@ for t = a0:ls:a_end
 end
 
 cls_w1 = p1;
-cls_w2 = p2;
 
 figure;
 plot(alpha, p1);
