@@ -1,8 +1,7 @@
-function [fvec, lbl] = Generate_data(cls_ctrs, prots, N)
+function [fvec, lbl] = Generate_data(cls_ctrs, N, Num_all)
 %ARTI_DATA Summary of this function goes here
 %   Detailed explanation goes here
 C = 2; % number of classes
-Num_all = 200; % number of all the points
 
 % p2 = 1 - p1;
 p = 0.5; 
@@ -39,7 +38,7 @@ for i = 1:C
 end
 
 % plot prototypes
-gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,N+1); prots(2,N+1)], 'mg', '..',25);
+% gscatter([prots(1,1); prots(2,1)],[prots(1,2); prots(2,2)],[prots(1,N+1); prots(2,N+1)], 'mg', '..',25);
 xlim([-3 5])
 ylim([-3 5])
 hold off;

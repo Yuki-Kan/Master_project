@@ -1,4 +1,4 @@
-function [ time_total ] = Virtual_Drift( input_scenario_idx, cls_ctrs, N, gamma, eta)
+function [ wdavg_tra_error ] = Virtual_Drift( input_scenario_idx, cls_ctrs, N)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -122,66 +122,6 @@ wdavg_ref_error = wdsum_ref_error/runs;
 wdavg_err1 = wdsum_err1/runs;
 wdavg_err2 = wdsum_err2/runs;
 
-
-% ===========================================
-% experiments with noise
-
-[ n_avg_tra_error ] = Virtual_Drift_noise(input_scenario_idx, cls_ctrs, N, gamma_noise);
-
-
-% ============================================
-% plot 
-figure;
-hold on
-
-% plot(1:length(avg_tra_error), avg_tra_error); 
-% plot(1:length(avg_ref_error), avg_ref_error);
-% plot(1:length(avg_err1), avg_err1)
-% plot(1:length(avg_err2), avg_err2)
-
-% plot(1:ls:a_end, avg_tra_error); 
-% plot(1:ls:a_end, avg_ref_error);
-% plot(1:ls:a_end, avg_err1)
-% plot(1:ls:a_end, avg_err2)
-
-gamma_erray = cat(2, 0:gamma_step:gamma, gamma);
-plot(gamma_erray, cat(1, ini_tra_err, wdavg_tra_error)); 
-% plot(0:gamma_step:gamma, wdavg_ref_error);
-% plot(0:gamma_step:gamma, wdavg_err1)
-% plot(0:gamma_step:gamma, wdavg_err2)
-
-% eta_erray = cat(2, 0:eta_step:eta, eta);
-plot(gamma_erray, cat(1, ini_tra_err, n_avg_tra_error)); 
-% plot(0:eta_step:eta, avg_ref_error);
-% plot(0:eta_step:eta, avg_err1)
-% plot(0:eta_step:eta, avg_err2)
-
-% plot(0:lr_step:lr, avg_tra_error); 
-% plot(0:lr_step:lr, avg_ref_error);
-% plot(0:lr_step:lr, avg_err1)
-% plot(0:lr_step:lr, avg_err2)
-
-hold off
-ylim([0 1])
-% legend({'tracking error','ref error','error1','error2'}, 'location', 'northeast')
-% xlabel('\eta')
-% xlabel('\gamma')
-% xlabel('learnign rate')
-
-legend({'weight decay','noise'}, 'location', 'northeast')
-xlabel('\eta(\gamma)')
-ylabel('tracking error')
-title(['Tracking errors ( lr ' num2str(lr) ' N ' num2str(N) ')'])
-
-% if eta
-%     title(['Generalization errors (noise ' num2str(eta) ' lr ' num2str(lr) ')'])
-% elseif gamma
-%     title(['Generalization errors (gamma ' num2str(gamma) ' lr ' num2str(lr) ')'])
-% else
-%     title('Generalization errors (original LVQ1)')
-% end
-
-time_total = toc;
 
 end
 

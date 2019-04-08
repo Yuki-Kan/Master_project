@@ -15,6 +15,7 @@ plot(t, p1)
 hold on
 plot(t, p2)
 ylim([0 1])
+title('Oscillation')
 hold off
 
 end

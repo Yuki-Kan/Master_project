@@ -1,4 +1,4 @@
-function [cls_w1] = Linear( a0, a_end, p_init, p_max, ls)
+function [cls_w1] = Linear( a_mid, a_end, p_init_linear, p_max_linear, ls)
 %CLASS_WEIGHTS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -10,16 +10,16 @@ i = 1;
 
 
 % for t <= t0
-for t = 1:ls:a0
-    p1(i) = p_init;
+for t = 1:ls:a_mid
+    p1(i) = p_init_linear;
     p2(i) = 1 - p1(i);
     i = i +1;
 end
 
 i = i -1 ;
 % for t0 <= t_end
-for t = a0:ls:a_end
-    p1(i) = p_init + (p_max - p_init)* (t-a0) /(a_end - a0);
+for t = a_mid:ls:a_end
+    p1(i) = p_init_linear + (p_max_linear - p_init_linear)* (t-a_mid) /(a_end - a_mid);
     p2(i) = 1 - p1(i);
     i = i+1;
 end
@@ -32,6 +32,7 @@ hold on
 plot(alpha, p2);
 xlim([0 a_end])
 ylim([0 1])
+title('Linear change')
 hold off
 
 legend('class-w1','class-w2')

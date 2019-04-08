@@ -26,12 +26,14 @@ r3 = (n1*rc)';
 r3 = r3/norm(r3)*sqrt(f2*abs(q12));
 r3q= dot(r3,r3); 
 
+
 n2 = null([w1;w2;r3]); % null-space orthogonal to w1,w2 and r3
 % d2 = size(n2,2); 
 d2 = N-3; 
 rc = rand(d2,1); 
 r1 = (n2*rc)'; 
-r1 = r1/norm(r1)*sqrt(f2*q11-r3q);
+r1 = r1/norm(r1)*sqrt(abs(f2*q11-r3q));
+
 
 n3 = null([w1;w2;r3;r1]); 
 % construct vector via random coefficients rc in null-space and normalize
@@ -39,11 +41,15 @@ n3 = null([w1;w2;r3;r1]);
 d3 = N-4; 
 rc = rand(d3,1);
 r2 = (n3*rc)'; 
-r2 = r2/norm(r2)*sqrt(f2*q22-r3q); 
+r2 = r2/norm(r2)*sqrt(abs(f2*q22-r3q)); 
+
 
 % construct new student vectors
 w1new = w1*(1-eta/N) + r1 + sign(q12)*r3;  
 w2new = w2*(1-eta/N) + r2 +           r3; 
+
+% w1new = abs(w1new);
+% w2new = abs(w2new);
 
 proto_new = [w1new; w2new];
 

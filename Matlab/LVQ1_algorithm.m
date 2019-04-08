@@ -1,4 +1,4 @@
-function [new_protos] = LVQ1_algorithm(example_new, example_label, protos, prots_lbl, lr, N)
+function [new_protos, err] = LVQ1_algorithm(example_new, example_label, protos, prots_lbl, lr, N, err_count)
 
 num_prots = size(protos, 1);
 data_dim = size(example_new, 2);
@@ -23,12 +23,10 @@ if cls_proto_lbl == example_label
     protos(prot_idx, :) = protos(prot_idx, :)+ lr/N*diff;
 else
     protos(prot_idx, :) = protos(prot_idx, :)- lr/N*diff;  
+    err_count = err_count + 1;
 end   
 
 new_protos = protos;
-    
-
-
-
+err =  err_count;
 
 end
