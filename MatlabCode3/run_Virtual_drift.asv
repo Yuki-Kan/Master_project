@@ -1,0 +1,25 @@
+% run virtual drift under three scenarios respectively
+clear
+% general parameters
+N = 100;             % dimensions
+lr = 1;              % learning rate
+gamma = 2;           % gamma
+eta = 0.01;          % eta
+runs = 1;            % running times
+
+
+% % three drift scenarios
+%   idx = 1: Linear
+%   idx = 2: Sudden change
+%   idx = 3: Oscillation
+input_scenario_idx = 1;
+lschange = 50;      % change point
+lstotal = 200;   % total learning steps
+p1 = DriftCase(input_scenario_idx, lsmid, lstotal, N);
+% cls_p1 = 0.5;
+
+
+a = VirtualDrift(p1, lstotal, lr, N, gamma, eta, runs);
+% b = VirtualDrift_wd(cls_p1, a_end, cls_ctrs, N, runs);
+% c = VirtualDrift_noise(cls_p1, a_end, cls_ctrs, N, runs);
+ 
