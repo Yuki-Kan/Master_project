@@ -2,14 +2,15 @@ function [cls_w1] = Linear( a_mid, a_end, p_init_linear, p_max_linear, ls)
 %CLASS_WEIGHTS Summary of this function goes here
 %   Detailed explanation goes here
 
-alpha = ls:ls:a_end;
+alpha = 1:ls:a_end;
 len = length(alpha);
 p1 = zeros(1,len);
 p2 = zeros(1,len);
 i = 1;
 
+
 % for t <= t0
-for t = ls:ls:a_mid
+for t = 1:ls:a_mid
     p1(i) = p_init_linear;
     p2(i) = 1 - p1(i);
     i = i +1;
