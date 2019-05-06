@@ -15,14 +15,15 @@ gamma_step = (gamma_final-gamma_ini)/total_len;
 %%% Initial prototypes
 % protos_initial = IniClusterCenter(N);
 iniprotos = Iniprotos(N);
+cls_ctrs = IniClusterCenter(N);
 
 %%% Experiments 
 % lvq1 withot wdecay, gamma=0
-[wderr01, wderr02, wdtra_err0, wdref_err0] = VirtualDrift_wdecay(iniprotos, p1, lstotal, N, runs, 0, lr);
+[wderr01, wderr02, wdtra_err0, wdref_err0] = VirtualDrift_wdecay(cls_ctrs, iniprotos, p1, lstotal, N, runs, 0, lr);
 % with weight decay 
-[wderr1, wderr2, wdtra_err, wdref_err] = VirtualDrift_wdecay(iniprotos, p1, lstotal, N, runs, gamma_final, lr);
+[wderr1, wderr2, wdtra_err, wdref_err] = VirtualDrift_wdecay(cls_ctrs, iniprotos, p1, lstotal, N, runs, gamma_final, lr);
 % with noise 
-[nerr1, nerr2, ntra_err, nref_err] = VirtualDrift_noise(iniprotos, p1, lstotal, N, runs, eta_final, lr);
+[nerr1, nerr2, ntra_err, nref_err] = VirtualDrift_noise(cls_ctrs, iniprotos, p1, lstotal, N, runs, eta_final, lr);
 
 
 %%% ============= plot figures below ======================================
@@ -88,7 +89,7 @@ ylim([0 0.6])
 legend({'error1','error2','tracking error','ref error'}, 'location', 'northeast')
 xlabel('learning step')
 ylabel('\epsilon')
-title(['Drift1 ( lr=' num2str(lr) ', N=' num2str(N) ...
+title(['Drift3 ( lr=' num2str(lr) ', N=' num2str(N) ...
        ', gamma=' num2str(0) ')'])
    
    
@@ -106,7 +107,7 @@ ylim([0 0.6])
 legend({'error1','error2','tracking error','ref error'}, 'location', 'northeast')
 xlabel('learning step')
 ylabel('\epsilon')
-title(['Drift1 with wdecay( lr=' num2str(lr) ', N=' num2str(N) ...
+title(['Drift3 with wdecay( lr=' num2str(lr) ', N=' num2str(N) ...
        ', gamma=' num2str(gamma_final) ')'])
 
    
@@ -124,7 +125,7 @@ ylim([0 0.6])
 legend({'error1','error2','tracking error','ref error'}, 'location', 'northeast')
 xlabel('learning step')
 ylabel('\epsilon')
-title(['Drift1 with noise( lr=' num2str(lr) ', N=' num2str(N) ...
+title(['Drift3 with noise( lr=' num2str(lr) ', N=' num2str(N) ...
        ', eta=' num2str(eta_final) ')'])
 
 

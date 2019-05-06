@@ -1,4 +1,4 @@
-function [wderr1, wderr2, wdtra_err, wdref_err] = VirtualDrift_wdecay(iniprotos, p1, a_end, N, runs, gamma_final, lr)
+function [wderr1, wderr2, wdtra_err, wdref_err] = VirtualDrift_wdecay(cls_ctrs, iniprotos, p1, a_end, N, runs, gamma_final, lr)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,7 +6,7 @@ function [wderr1, wderr2, wdtra_err, wdref_err] = VirtualDrift_wdecay(iniprotos,
 ls = 1/N;                % continue learning step
 protos = iniprotos;
 prots_lbl = [1;2];
-cls_ctrs = IniClusterCenter(N);
+
 
 % parameters used for Generation errors
 lambda = 1; 
@@ -30,6 +30,13 @@ wdsum_ref_error = zeros(total_len, 1);
 wdsum_err1 = zeros(total_len, 1);
 wdsum_err2 = zeros(total_len, 1);
 
+% sum_Qs11 = zeros(total_len, 1);
+% sum_Qs22 = zeros(total_len, 1);
+% sum_Qs12 = zeros(total_len, 1);
+% sum_Qs21 = zeros(total_len, 1);
+sum_Rs11 = zeros(total_len, 1);
+sum_Rs22 = zeros(total_len, 1);
+
 % used when increasing gamma
 gamma = 0;
 gamma_step = (gamma_final-gamma)/total_len;
@@ -45,8 +52,8 @@ for k = 1:runs
     err1_wd = [];
     err2_wd = [];
     
-    Qs11 = [];
-    Qs22 = [];
+%     Qs11 = [];
+%     Qs22 = [];
     Rs11 = [];
     Rs22 = [];
     
@@ -68,10 +75,10 @@ for k = 1:runs
         [protos, Q] = LVQ1_wdecay(example_new, example_label, protos, prots_lbl, lr, N, gamma);
         
         % add this in order to plot Q and R, only for one run
-        Q11 = Q(1,1);
-        Q22 = Q(2,2);
-        Qs11 = [Qs11; Q11];
-        Qs22 = [Qs22; Q22];
+%         Q11 = Q(1,1);
+%         Q22 = Q(2,2);
+%         Qs11 = [Qs11; Q11];
+%         Qs22 = [Qs22; Q22];
         
         R = iniprotos * protos';
         R11 = R(1,1);
@@ -99,6 +106,11 @@ for k = 1:runs
     wdsum_ref_error = wdsum_ref_error + ref_error_wd;
     wdsum_err1 = wdsum_err1 + err1_wd;
     wdsum_err2 = wdsum_err2 + err2_wd;
+    
+%     sum_Qs11 = sum_Qs11 + Qs11;
+%     sum_Qs22 = sum_Qs22 + Qs22;
+    sum_Rs11 = sum_Rs11 + Rs11;
+    sum_Rs22 = sum_Rs22 + Rs22;
 end
 
 % average error
@@ -106,6 +118,12 @@ wdavg_tra_error = wdsum_tra_error/runs;
 wdavg_ref_error = wdsum_ref_error/runs;
 wdavg_err1 = wdsum_err1/runs;
 wdavg_err2 = wdsum_err2/runs;
+
+% avg_Qs11 = sum_Qs11/runs;
+% avg_Qs22 = sum_Qs22/runs;
+avg_Rs11 = sum_Rs11/runs;
+avg_Rs22 = sum_Rs22/runs;
+
 
 wderr1 = cat(1, ini_err1, wdavg_err1);
 wderr2 = cat(1, ini_err2, wdavg_err2);
@@ -115,8 +133,8 @@ wdref_err = cat(1, ini_ref_err, wdavg_ref_error);
 
 figure;
 hold on
-plot(1:length(Rs11), Rs11)
-plot(1:length(Rs22), Rs22)
+plot(1:length(avg_Rs11), avg_Rs11)
+plot(1:length(avg_Rs22), avg_Rs22)
 % plot(1:length(Qs11), Qs11)
 % plot(1:length(Qs22), Qs22)
 hold off

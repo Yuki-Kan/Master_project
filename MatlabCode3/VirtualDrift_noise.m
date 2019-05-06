@@ -1,11 +1,10 @@
-function [nerr1, nerr2, ntra_err, nref_err] = VirtualDrift_noise(iniprotos, p1, a_end, N, runs, eta_final, lr)
+function [nerr1, nerr2, ntra_err, nref_err] = VirtualDrift_noise(cls_ctrs, iniprotos, p1, a_end, N, runs, eta_final, lr)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 ls = 1/N;             % continue learning step
 protos = iniprotos;
 prots_lbl = [1;2];
-cls_ctrs = IniClusterCenter(N);
 
 
 % parameters of Generation errors
@@ -31,10 +30,10 @@ nsum_ref_error = zeros(total_len, 1);
 nsum_err1 = zeros(total_len, 1);
 nsum_err2 = zeros(total_len, 1);
 
-sum_Qs11 = zeros(total_len, 1);
-sum_Qs22 = zeros(total_len, 1);
-sum_Qs12 = zeros(total_len, 1);
-sum_Qs21 = zeros(total_len, 1);
+% sum_Qs11 = zeros(total_len, 1);
+% sum_Qs22 = zeros(total_len, 1);
+% sum_Qs12 = zeros(total_len, 1);
+% sum_Qs21 = zeros(total_len, 1);
 sum_Rs11 = zeros(total_len, 1);
 sum_Rs22 = zeros(total_len, 1);
 
@@ -50,10 +49,10 @@ for r = 1:runs
     err1_n = [];
     err2_n = [];
     
-    Qs11 = [];
-    Qs22 = [];
-    Qs12 = [];
-    Qs21 = [];
+%     Qs11 = [];
+%     Qs22 = [];
+%     Qs12 = [];
+%     Qs21 = [];
     
     Rs11 = [];
     Rs22 = [];
@@ -82,25 +81,21 @@ for r = 1:runs
         
         % add this in order to plot Q and R
         Q = proto_new * proto_new';
-        Q11 = Q(1,1);
-        Q22 = Q(2,2);
-        Q12 = Q(1,2);
-        Q21 = Q(2,1);
-        Qs11 = [Qs11; Q11];
-        Qs22 = [Qs22; Q22];
-        Qs12 = [Qs12; Q12];
-        Qs21 = [Qs21; Q21];
+%         Q11 = Q(1,1);
+%         Q22 = Q(2,2);
+%         Q12 = Q(1,2);
+%         Q21 = Q(2,1);
+%         Qs11 = [Qs11; Q11];
+%         Qs22 = [Qs22; Q22];
+%         Qs12 = [Qs12; Q12];
+%         Qs21 = [Qs21; Q21];
         
         R = iniprotos * proto_new';
         R11 = R(1,1);
         R22 = R(2,2);
         Rs11 = [Rs11; R11];
         Rs22 = [Rs22; R22];
-        
-        
-%         if ~isreal(protos)
-%             break;
-%         end
+
         
         % get generalization errors
         [nerr1, nerr2, nref_err, ntra_err] = Gerror(protos, cls_ctrs, lambda, var1, var2, current_p1, Q); 
@@ -117,11 +112,10 @@ for r = 1:runs
     nsum_err1 = nsum_err1 + err1_n;
     nsum_err2 = nsum_err2 + err2_n;
     
-    sum_Qs11 = sum_Qs11 + Qs11;
-    sum_Qs22 = sum_Qs22 + Qs22;
-    sum_Qs12 = sum_Qs12 + Qs12;
-    sum_Qs21 = sum_Qs21 + Qs21;
-    
+%     sum_Qs11 = sum_Qs11 + Qs11;
+%     sum_Qs22 = sum_Qs22 + Qs22;
+%     sum_Qs12 = sum_Qs12 + Qs12;
+%     sum_Qs21 = sum_Qs21 + Qs21;
     sum_Rs11 = sum_Rs11 + Rs11;
     sum_Rs22 = sum_Rs22 + Rs22;
 end
@@ -132,11 +126,10 @@ n_avg_ref_error = nsum_ref_error/runs;
 n_avg_err1 = nsum_err1/runs;
 n_avg_err2 = nsum_err2/runs;
 
-avg_Qs11 = sum_Qs11/runs;
-avg_Qs22 = sum_Qs22/runs;
-avg_Qs12 = sum_Qs12/runs;
-avg_Qs21 = sum_Qs21/runs;
-
+% avg_Qs11 = sum_Qs11/runs;
+% avg_Qs22 = sum_Qs22/runs;
+% avg_Qs12 = sum_Qs12/runs;
+% avg_Qs21 = sum_Qs21/runs;
 avg_Rs11 = sum_Rs11/runs;
 avg_Rs22 = sum_Rs22/runs;
 
@@ -151,9 +144,6 @@ figure;
 hold on
 plot(1:length(avg_Rs11), avg_Rs11)
 plot(1:length(avg_Rs22), avg_Rs22)
-% plot(1:length(avg_Qs11), avg_Qs11)
-% plot(1:length(avg_Qs22), avg_Qs22)
-% plot(1:length(avg_Qs12), avg_Qs12)
 hold off
 legend({'Rs11', 'Rs22'}, 'location', 'northeast')
 xlabel('learning time')
