@@ -1,4 +1,4 @@
-function [nerr1, nerr2, ntra_err, nref_err] = VirtualDrift_noise(cls_ctrs, iniprotos, p1, a_end, N, runs, eta_final, lr)
+function [nerr1, nerr2, ntra_err, nref_err] = ConDrift_noise(cls_ctrs, iniprotos, p1, a_end, N, runs, eta_final, lr, delta)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -15,7 +15,7 @@ var2 = 0.4;
 
 % Initial error at time 0
 Q = protos * protos';
-ini_p1 = 0.5;
+ini_p1 = p1(1);
 [ini_err1, ini_err2, ini_ref_err, ini_tra_err] = Gerror(protos, cls_ctrs, lambda, var1, var2, ini_p1, Q); 
 
 
@@ -37,9 +37,9 @@ nsum_err2 = zeros(total_len, 1);
 sum_Rs11 = zeros(total_len, 1);
 sum_Rs22 = zeros(total_len, 1);
 
-% used when increasing gamma
-eta = 0;            
-eta_step = (eta_final-eta)/total_len;
+% % used when increasing gamma
+% eta = 0;            
+% eta_step = (eta_final-eta)/total_len;
 
 for r = 1:runs
     fprintf('noise runs: %d\n', r);
@@ -48,12 +48,10 @@ for r = 1:runs
     ref_error_n = [];
     err1_n = [];
     err2_n = [];
-    
 %     Qs11 = [];
 %     Qs22 = [];
 %     Qs12 = [];
 %     Qs21 = [];
-    
     Rs11 = [];
     Rs22 = [];
     
@@ -62,21 +60,24 @@ for r = 1:runs
     
     for t = ls:ls:a_end 
         % at time step t, get p1(t) and p2(t)
-        current_p1 = p1(i);
-        % current_p1 = 0.5;
+%         current_p1 = p1(i);
+        current_p1 = p1;
         example_label = Class_toss(current_p1);
+        
+        % randomly drifting cluster centers
+        cls_ctrs = RealDrift(N, delta, cls_ctrs);
 
         % generate new example based on the label
         example_new = normrnd(cls_ctrs(example_label, :), sigma, [1, N]); 
 
         % LVQ1
-        protos0 = LVQ1_alg(example_new, example_label, protos, prots_lbl, lr, N);
+        protos0 = LVQ1(example_new, example_label, protos, prots_lbl, lr, N, 0);
         % protos0 = protos;  % no training
         
         % add noise
         % eta = eta + eta_step;       % increasing eta
         eta = eta_final;            % constant eta
-        proto_new = NewNoiseStep(eta, protos0, N);
+        proto_new = NoiseStep(eta, protos0, N);
         protos = proto_new;
         
         % add this in order to plot Q and R
@@ -104,7 +105,9 @@ for r = 1:runs
         ref_error_n = [ref_error_n; nref_err];
         tra_error_n = [tra_error_n; ntra_err];
        
+
         i = i+1;
+        
     end
     
     nsum_tra_error = nsum_tra_error + tra_error_n;
@@ -140,15 +143,15 @@ ntra_err = cat(1, ini_tra_err, n_avg_tra_error);
 nref_err = cat(1, ini_ref_err, n_avg_ref_error);
 
 
-figure;
-hold on
-plot(1:length(avg_Rs11), avg_Rs11)
-plot(1:length(avg_Rs22), avg_Rs22)
-hold off
-legend({'Rs11', 'Rs22'}, 'location', 'northeast')
-xlabel('learning time')
-ylabel('R')
-title(['R parameters (noise, N = ' num2str(N) ', eta = ' num2str(eta_final) ' )'])
+% figure;
+% hold on
+% plot(1:length(avg_Rs11), avg_Rs11)
+% plot(1:length(avg_Rs22), avg_Rs22)
+% hold off
+% legend({'Rs11', 'Rs22'}, 'location', 'northeast')
+% xlabel('learning time')
+% ylabel('R')
+% title(['R parameters (noise, N = ' num2str(N) ', eta = ' num2str(eta_final) ' )'])
 
 
 end

@@ -1,4 +1,4 @@
-function [ proto_new ] = NewNoiseStep(eta, protos0, N)
+function [ protonew ] = NoiseStep(eta, protos0, N)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -44,28 +44,21 @@ r2 = (n3*rc)';
 r2 = r2/norm(r2)*sqrt(abs(f2*q22-r3q)); 
 
 
-% construct new student vectors
+% construct new prototypes
 w1new = w1*(1-eta/N) + r1 +           r3;  
 w2new = w2*(1-eta/N) + r2 + sign(q12)*r3; 
-
-% w1new = abs(w1new);
-% w2new = abs(w2new);
-
-proto_new = [w1new; w2new];
+protonew = [w1new; w2new];
 
 
-% check required overlaps 
-q11new= dot(w1new,w1new);
-q12new= dot(w1new,w2new);
-q22new= dot(w2new,w2new);
+% % check required overlaps 
+% q11new= dot(w1new,w1new);
+% q12new= dot(w1new,w2new);
+% q22new= dot(w2new,w2new);
 
-if(0)
-    r11 = dot(w1new,w1)/q11;  % should be 1-eta/N
-    r12 = dot(w1new,w2)/q12;  % should be 1-eta/n
-    r21 = dot(w2new,w1)/q12;  % should be 1-eta/n
-    r22 = dot(w2new,w2)/q22;  % should be 1-eta/n
-end
-%  
+% r11 = dot(w1new,w1)/q11;  % should be 1-eta/N
+% r12 = dot(w1new,w2)/q12;  % should be 1-eta/n
+% r21 = dot(w2new,w1)/q12;  % should be 1-eta/n
+% r22 = dot(w2new,w2)/q22;  % should be 1-eta/n
 
 end
 

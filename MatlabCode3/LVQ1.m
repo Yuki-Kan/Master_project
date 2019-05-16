@@ -1,6 +1,5 @@
-function [new_protos, Q] = LVQ1_wdecay(example_new, example_label, protos, prots_lbl, lr, N, gamma)
+function [new_protos, Q] = LVQ1(example_new, example_label, protos, prots_lbl, lr, N, gamma)
 
-% old_protos = protos;
 
 num_prots = size(protos, 1);
 data_dim = size(example_new, 2);
