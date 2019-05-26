@@ -1,4 +1,4 @@
-function [wderr1, wderr2, wdtra_err, wdref_err] = ConDrift_wdecay(cls_ctrs, iniprotos, p1, a_end, N, runs, gamma_final, lr, delta)
+function [wderr1, wderr2, wdtra_err, wdref_err] = ConDrift_wdecay(cls_ctrs, iniprotos, p1, a_end, N, runs, gamma, lr, delta)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -34,12 +34,8 @@ wdsum_err2 = zeros(total_len, 1);
 % sum_Qs22 = zeros(total_len, 1);
 % sum_Qs12 = zeros(total_len, 1);
 % sum_Qs21 = zeros(total_len, 1);
-sum_Rs11 = zeros(total_len, 1);
-sum_Rs22 = zeros(total_len, 1);
-
-% % used when increasing gamma
-% gamma = 0;
-% gamma_step = (gamma_final-gamma)/total_len;
+% sum_Rs11 = zeros(total_len, 1);
+% sum_Rs22 = zeros(total_len, 1);
 
 
 % =============================================
@@ -53,12 +49,10 @@ for k = 1:runs
     err2_wd = [];
 %     Qs11 = [];
 %     Qs22 = [];
-    Rs11 = [];
-    Rs22 = [];
+%     Rs11 = [];
+%     Rs22 = [];
     
     i = 1;
-    % gamma = 0;
-    
     for t = ls:ls:a_end 
         % at time step t, get p1(t) and p2(t)
 %         current_p1 = p1(i);
@@ -72,8 +66,6 @@ for k = 1:runs
         example_new = normrnd(cls_ctrs(example_label, :), sigma, [1, N]); 
 
         % LVQ1 with weight decay
-        % gamma = gamma + gamma_step;
-        gamma = gamma_final;
         [protos, Q] = LVQ1(example_new, example_label, protos, prots_lbl, lr, N, gamma);
         
         % add this in order to plot Q and R
@@ -82,11 +74,11 @@ for k = 1:runs
 %         Qs11 = [Qs11; Q11];
 %         Qs22 = [Qs22; Q22];
         
-        R = iniprotos * protos';
-        R11 = R(1,1);
-        R22 = R(2,2);
-        Rs11 = [Rs11; R11];
-        Rs22 = [Rs22; R22];
+%         R = iniprotos * protos';
+%         R11 = R(1,1);
+%         R22 = R(2,2);
+%         Rs11 = [Rs11; R11];
+%         Rs22 = [Rs22; R22];
        
         % get generalization error
         [wderr1, wderr2, wdref_err, wdtra_err] = Gerror(protos, cls_ctrs, lambda, var1, var2, current_p1, Q); 
@@ -95,14 +87,6 @@ for k = 1:runs
         ref_error_wd = [ref_error_wd; wdref_err];
         tra_error_wd = [tra_error_wd; wdtra_err];
         
-%         if rem(i,N)==0
-%             err1_array = [err1_array; err1];
-%             err2_array = [err2_array; err2];
-%             ref_error_array = [ref_error_array; ref_err];
-%             tra_error_array = [tra_error_array; tra_err];
-%         end
-
-       
         i = i+1;
     end
     
@@ -113,8 +97,8 @@ for k = 1:runs
     
 %     sum_Qs11 = sum_Qs11 + Qs11;
 %     sum_Qs22 = sum_Qs22 + Qs22;
-    sum_Rs11 = sum_Rs11 + Rs11;
-    sum_Rs22 = sum_Rs22 + Rs22;
+%     sum_Rs11 = sum_Rs11 + Rs11;
+%     sum_Rs22 = sum_Rs22 + Rs22;
 end
 
 % average error
@@ -125,8 +109,8 @@ wdavg_err2 = wdsum_err2/runs;
 
 % avg_Qs11 = sum_Qs11/runs;
 % avg_Qs22 = sum_Qs22/runs;
-avg_Rs11 = sum_Rs11/runs;
-avg_Rs22 = sum_Rs22/runs;
+% avg_Rs11 = sum_Rs11/runs;
+% avg_Rs22 = sum_Rs22/runs;
 
 
 wderr1 = cat(1, ini_err1, wdavg_err1);

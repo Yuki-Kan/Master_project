@@ -1,4 +1,4 @@
-function [nerr1, nerr2, ntra_err, nref_err] = ConDrift_noise(cls_ctrs, iniprotos, p1, a_end, N, runs, eta_final, lr, delta)
+function [nerr1, nerr2, ntra_err, nref_err] = ConDrift_noise(cls_ctrs, iniprotos, p1, a_end, N, runs, eta, lr, delta)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -34,12 +34,9 @@ nsum_err2 = zeros(total_len, 1);
 % sum_Qs22 = zeros(total_len, 1);
 % sum_Qs12 = zeros(total_len, 1);
 % sum_Qs21 = zeros(total_len, 1);
-sum_Rs11 = zeros(total_len, 1);
-sum_Rs22 = zeros(total_len, 1);
+% sum_Rs11 = zeros(total_len, 1);
+% sum_Rs22 = zeros(total_len, 1);
 
-% % used when increasing gamma
-% eta = 0;            
-% eta_step = (eta_final-eta)/total_len;
 
 for r = 1:runs
     fprintf('noise runs: %d\n', r);
@@ -52,12 +49,10 @@ for r = 1:runs
 %     Qs22 = [];
 %     Qs12 = [];
 %     Qs21 = [];
-    Rs11 = [];
-    Rs22 = [];
+%     Rs11 = [];
+%     Rs22 = [];
     
     i = 1;
-    % eta = 0;
-    
     for t = ls:ls:a_end 
         % at time step t, get p1(t) and p2(t)
 %         current_p1 = p1(i);
@@ -75,8 +70,6 @@ for r = 1:runs
         % protos0 = protos;  % no training
         
         % add noise
-        % eta = eta + eta_step;       % increasing eta
-        eta = eta_final;            % constant eta
         proto_new = NoiseStep(eta, protos0, N);
         protos = proto_new;
         
@@ -91,11 +84,11 @@ for r = 1:runs
 %         Qs12 = [Qs12; Q12];
 %         Qs21 = [Qs21; Q21];
         
-        R = iniprotos * proto_new';
-        R11 = R(1,1);
-        R22 = R(2,2);
-        Rs11 = [Rs11; R11];
-        Rs22 = [Rs22; R22];
+%         R = iniprotos * proto_new';
+%         R11 = R(1,1);
+%         R22 = R(2,2);
+%         Rs11 = [Rs11; R11];
+%         Rs22 = [Rs22; R22];
 
         
         % get generalization errors
@@ -105,9 +98,7 @@ for r = 1:runs
         ref_error_n = [ref_error_n; nref_err];
         tra_error_n = [tra_error_n; ntra_err];
        
-
         i = i+1;
-        
     end
     
     nsum_tra_error = nsum_tra_error + tra_error_n;
@@ -119,8 +110,8 @@ for r = 1:runs
 %     sum_Qs22 = sum_Qs22 + Qs22;
 %     sum_Qs12 = sum_Qs12 + Qs12;
 %     sum_Qs21 = sum_Qs21 + Qs21;
-    sum_Rs11 = sum_Rs11 + Rs11;
-    sum_Rs22 = sum_Rs22 + Rs22;
+%     sum_Rs11 = sum_Rs11 + Rs11;
+%     sum_Rs22 = sum_Rs22 + Rs22;
 end
 
 % average error
@@ -133,14 +124,16 @@ n_avg_err2 = nsum_err2/runs;
 % avg_Qs22 = sum_Qs22/runs;
 % avg_Qs12 = sum_Qs12/runs;
 % avg_Qs21 = sum_Qs21/runs;
-avg_Rs11 = sum_Rs11/runs;
-avg_Rs22 = sum_Rs22/runs;
+% avg_Rs11 = sum_Rs11/runs;
+% avg_Rs22 = sum_Rs22/runs;
 
 
 nerr1 = cat(1, ini_err1, n_avg_err1);
 nerr2 = cat(1, ini_err2, n_avg_err2);
 ntra_err = cat(1, ini_tra_err, n_avg_tra_error);
 nref_err = cat(1, ini_ref_err, n_avg_ref_error);
+
+
 
 
 % figure;
